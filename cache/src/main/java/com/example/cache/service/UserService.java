@@ -1,11 +1,14 @@
 package com.example.cache.service;
 
+import static com.example.cache.config.CacheConfig.CACHE1;
+
 import com.example.cache.domain.entity.RedisHashUser;
 import com.example.cache.domain.entity.User;
 import com.example.cache.domain.repository.RedisHashUserRepository;
 import com.example.cache.domain.repository.UserRepository;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +47,10 @@ public class UserService {
                     .build());
         });
         return cachedUser;
+    }
+
+    @Cacheable(cacheNames = CACHE1, key = "'user:' + #id")
+    public User getUser3(final Long id) {
+        return userRepository.findById(id).orElseThrow();
     }
 }
